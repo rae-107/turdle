@@ -5,15 +5,12 @@ var guess = '';
 var gamesPlayed = [];
 let words
 
+//fetch
 const wordsArray = () => {
   fetch('http://localhost:3001/api/v1/words')
   .then(res => res.json())
-  .then(data => {
-    words = data
-  })
+  .then(data => words = data)
 }
-
-wordsArray()
 
 // Query Selectors
 var inputs = document.querySelectorAll('input');
@@ -30,8 +27,11 @@ var stats = document.querySelector('#stats-section');
 var gameOverBox = document.querySelector('#game-over-section');
 var gameOverGuessCount = document.querySelector('#game-over-guesses-count');
 var gameOverGuessGrammar = document.querySelector('#game-over-guesses-plural');
+var gameOverMessage = document.querySelector('#game-over-message')
+var informationalText = document.querySelector('#informational-text')
 
 // Event Listeners
+wordsArray()
 window.addEventListener('load', setGame);
 
 for (var i = 0; i < inputs.length; i++) {
@@ -104,9 +104,11 @@ function submitGuess() {
     compareGuess();
     if (checkForWin()) {
       setTimeout(declareWinner, 1000);
+    } else if (!checkForWin() && inputs[29].value){
+      setTimeout(declareLoser, 1000)
     } else {
       changeRow();
-    }
+    } 
   } else {
     errorMessage.innerText = 'Not a valid word. Try again!';
   }
@@ -178,13 +180,25 @@ function changeRow() {
 
 function declareWinner() {
   recordGameStats();
+  gameOverMessage.innerText = 'Yay!'
   changeGameOverText();
   viewGameOverMessage();
   setTimeout(startNewGame, 4000);
 }
 
+function declareLoser() {
+  recordGameStats();// solved: false
+  gameOverMessage.innerText = 'Sorry, bud. Try again';
+  informationalText.innerText = ''
+  changeGameOverText();
+  viewGameOverMessage();
+  setTimeout(startNewGame, 4000);
+}
+
+
 function recordGameStats() {
-  gamesPlayed.push({ solved: true, guesses: currentRow });
+  console.log(gamesPlayed)
+  gamesPlayed.push({ solved: (checkForWin()), guesses: currentRow });
 }
 
 function changeGameOverText() {
