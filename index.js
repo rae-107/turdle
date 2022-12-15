@@ -3,6 +3,17 @@ var winningWord = '';
 var currentRow = 1;
 var guess = '';
 var gamesPlayed = [];
+let words
+
+const wordsArray = () => {
+  fetch('http://localhost:3001/api/v1/words')
+  .then(res => res.json())
+  .then(data => {
+    words = data
+  })
+}
+
+wordsArray()
 
 // Query Selectors
 var inputs = document.querySelectorAll('input');
@@ -207,7 +218,6 @@ function clearKey() {
 }
 
 // Change Page View Functions
-
 function viewRules() {
   letterKey.classList.add('hidden');
   gameBoard.classList.add('collapsed');
